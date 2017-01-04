@@ -1,0 +1,27 @@
+= Linkhub
+
+Linkhub API Ruby SDK
+
+== Description
+
+This library is Linkhub API for Ruby.
+
+== Required Ruby version
+>= 2.0.0
+
+== Installation
+
+  $ gem install linkhub
+
+== Usage
+
+See Reference https://linkhub.co.kr/
+You must save source file in UTF8
+
+== Test
+
+  $ rake
+
+== Recent Change
+v1.0.0
+* Initialize
