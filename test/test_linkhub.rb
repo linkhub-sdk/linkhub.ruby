@@ -26,6 +26,7 @@ class LHTest < Test::Unit::TestCase
   def test_03getSessionToken
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
     token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)
+
     assert_not_nil(token)
   end
 
@@ -45,14 +46,14 @@ class LHTest < Test::Unit::TestCase
 
   def test_05getBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)['session_token']
     balance = auth.getBalance(token, LHTest::ServiceID)
     assert_not_nil(balance)
   end
 
   def test_06getPartnerBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)['session_token']
     balance = auth.getPartnerBalance(token, LHTest::ServiceID)
     assert_not_nil(balance)
   end
@@ -60,7 +61,7 @@ class LHTest < Test::Unit::TestCase
   def test_07getBalanceException
     assert_raise LinkhubException do
       auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-      token = auth.getSessionToken(LHTest::ServiceID, "9999999999", LHTest::Scope)
+      token = auth.getSessionToken(LHTest::ServiceID, "9999999999", LHTest::Scope)['session_token']
       balance = auth.getBalance(token, LHTest::ServiceID)
       assert_not_nil(balance)
     end
@@ -69,7 +70,7 @@ class LHTest < Test::Unit::TestCase
   def test_08getPartnerBalanceException
     assert_raise LinkhubException do
       auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-      token = auth.getSessionToken(LHTest::ServiceID, "9999999999", LHTest::Scope)
+      token = auth.getSessionToken(LHTest::ServiceID, "9999999999", LHTest::Scope)['session_token']
       balance = auth.getPartnerBalance(token, LHTest::ServiceID)
       assert_not_nil(balance)
     end

@@ -55,9 +55,9 @@ class Linkhub
     Net::HTTP::Post.new(uri)
 
     res = https.post(uri.path, postData, headers)
-    
+
     if res.code == "200"
-      JSON.parse(res.body)["session_token"]
+      JSON.parse(res.body)
     else
       raise LinkhubException.new(JSON.parse(res.body)["code"],
         JSON.parse(res.body)["message"])
