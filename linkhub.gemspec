@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.email       = 'code@linkhub.co.kr'
   s.files       = ["lib/linkhub.rb"]
   s.homepage    = 'https://github.com/linkhub-sdk/linkhub.ruby'
-  s.require_ruby_version = '>= 2.0.0'
+  s.required_ruby_version = '>= 2.0.0'
 end

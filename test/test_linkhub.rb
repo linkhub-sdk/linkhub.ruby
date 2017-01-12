@@ -26,7 +26,7 @@ class LHTest < Test::Unit::TestCase
   def test_03getSessionToken
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
     token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)
-
+    puts token['expiration']
     assert_not_nil(token)
   end
 
@@ -75,5 +75,4 @@ class LHTest < Test::Unit::TestCase
       assert_not_nil(balance)
     end
   end
-
 end
