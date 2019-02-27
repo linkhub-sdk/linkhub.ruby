@@ -78,6 +78,28 @@ class Linkhub
     end
   end
 
+  # 파트너 포인트 충전 URL - 2017/08/29 추가
+  def getPartnerURL(bearerToken, serviceID, togo)
+    uri = URI(LINKHUB_ServiceURL + "/" + serviceID + "/URL?TG=" + togo)
+
+    headers = {
+      "Authorization" => "Bearer " + bearerToken,
+    }
+
+    https = Net::HTTP.new(uri.host, 443)
+    https.use_ssl = true
+    Net::HTTP::Post.new(uri)
+
+    res = https.get(uri.request_uri, headers)
+
+    if res.code == "200"
+      JSON.parse(res.body)["url"]
+    else
+      raise LinkhubException.new(JSON.parse(res.body)["code"],
+        JSON.parse(res.body)["message"])
+    end
+  end
+
   # Get Popbill member remain point
   def getBalance(bearerToken, serviceID)
     uri = URI(LINKHUB_ServiceURL + "/" + serviceID + "/Point")

@@ -75,4 +75,12 @@ class LHTest < Test::Unit::TestCase
       assert_not_nil(balance)
     end
   end
+
+  def test_09getPartnerURL
+    auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
+    token = auth.getSessionToken("LHTest::ServiceID", LHTest::AccessID, LHTest::Scope)['session_token']
+    url = auth.getPartnerURL(token, LHTest::ServiceID, "CHRG")
+    assert_not_nil(url)
+    puts url
+  end
 end
