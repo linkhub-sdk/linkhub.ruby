@@ -7,7 +7,7 @@ class LHTest < Test::Unit::TestCase
   LinkID = "TESTER"
   SecretKey = "SwWxqU+0TErBXy/9TVjIPEnI0VTUMMSQZtJf3Ed8q3I="
 
-  ServiceID = "POPBILL_TEST"
+  ServiceID = "POPBILL"
   AccessID = "1234567890"
   Scope = ["member","110"]
 
@@ -25,8 +25,9 @@ class LHTest < Test::Unit::TestCase
 
   def test_03getSessionToken
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "*")
     puts token['expiration']
+    puts token['ipaddress']
     assert_not_nil(token)
   end
 

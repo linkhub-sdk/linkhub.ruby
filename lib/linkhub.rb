@@ -4,6 +4,9 @@ require "uri"
 require "json"
 require "digest"
 require "base64"
+require 'zlib'
+require 'stringio'
+require 'openssl'
 
 # Linkhub API Base Class
 class Linkhub
@@ -24,7 +27,7 @@ class Linkhub
   end
 
   # Get SessionToken for Bearer Token
-  def getSessionToken(serviceid, accessid, scope)
+  def getSessionToken(serviceid, accessid, scope, forwardip="")
     uri = URI(LINKHUB_ServiceURL + "/" + serviceid + "/Token")
     postData = {:access_id => accessid, :scope => scope}.to_json
 
@@ -33,6 +36,11 @@ class Linkhub
     hmacTarget = "POST\n"
     hmacTarget += Base64.strict_encode64(Digest::MD5.digest(postData)) + "\n"
     hmacTarget += apiServerTime + "\n"
+
+    if forwardip != ""
+      hmacTarget += forwardip + "\n"
+    end
+
     hmacTarget += LINKHUB_APIVersion + "\n"
     hmacTarget += "/" + serviceid + "/Token"
 
@@ -40,7 +48,7 @@ class Linkhub
 
     data = hmacTarget
     digest = OpenSSL::Digest.new("sha1")
-    hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, key, data))
+    hmac = Base64.strict_encode64(OpenSSL::HMAC.digest(digest, key, data))
 
     headers = {
       "Content-Type" => "application/json",
@@ -50,17 +58,26 @@ class Linkhub
       "x-lh-version" => LINKHUB_APIVersion
     }
 
-    https = Net::HTTP.new(uri.host, 443)
-    https.use_ssl = true
-    Net::HTTP::Post.new(uri)
+    if forwardip != ""
+      headers.store("x-lh-forwarded", forwardip)
+    end
 
+    https = Net::HTTP.new(uri.host, uri.port)
+    https.use_ssl = true
     res = https.post(uri.path, postData, headers)
 
+    begin
+      gz = Zlib::GzipReader.new(StringIO.new(res.body.to_s))
+      uncompressed_string = gz.read
+    rescue Zlib::Error => le
+      uncompressed_string = res.body
+    end
+
     if res.code == "200"
-      JSON.parse(res.body)
+      JSON.parse(uncompressed_string)
     else
-      raise LinkhubException.new(JSON.parse(res.body)["code"],
-        JSON.parse(res.body)["message"])
+      raise LinkhubException.new(JSON.parse(uncompressed_string)["code"],
+        JSON.parse(uncompressed_string)["message"])
     end
   end # end of getToken
 
