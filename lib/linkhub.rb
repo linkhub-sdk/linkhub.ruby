@@ -30,7 +30,7 @@ class Linkhub
   # Get SessionToken for Bearer Token
   def getSessionToken(serviceid, accessid, scope, forwardip="",useStaticIP=false)
     uri = URI( (useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceid + "/Token")
-    puts(uri)
+
     postData = {:access_id => accessid, :scope => scope}.to_json
 
     apiServerTime = getTime(useStaticIP)
@@ -87,7 +87,7 @@ class Linkhub
   # Get API Server UTC Time
   def getTime(useStaticIP=false)
     uri = URI((useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/Time")
-    puts(uri)
+    
     res = Net::HTTP.get_response(uri)
 
     if res.code == "200"
@@ -101,7 +101,7 @@ class Linkhub
   # 파트너 포인트 충전 URL - 2017/08/29 추가
   def getPartnerURL(bearerToken, serviceID, togo, useStaticIP=false)
     uri = URI((useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceID + "/URL?TG=" + togo)
-    puts(uri)
+
     headers = {
       "Authorization" => "Bearer " + bearerToken,
     }
@@ -123,7 +123,7 @@ class Linkhub
   # Get Popbill member remain point
   def getBalance(bearerToken, serviceID, useStaticIP=false)
     uri = URI((useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceID + "/Point")
-    puts(uri)
+
     headers = {
       "Authorization" => "Bearer " + bearerToken,
     }
@@ -145,7 +145,7 @@ class Linkhub
   # Get Linkhub partner remain point
   def getPartnerBalance(bearerToken, serviceID, useStaticIP)
     uri = URI( (useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceID + "/PartnerPoint")
-    puts(uri)
+
     headers = {
       "Authorization" => "Bearer " + bearerToken,
     }

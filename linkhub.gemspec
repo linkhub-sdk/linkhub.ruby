@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'linkhub'
-  s.version     = '1.3.0'
+  s.version     = '1.3.1'
   s.date        = '2020-07-15'
   s.summary     = 'Linkhub API SDK'
   s.description = 'Linkhub API SDK'
