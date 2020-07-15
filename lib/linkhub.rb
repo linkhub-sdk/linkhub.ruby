@@ -14,6 +14,7 @@ class Linkhub
 
   LINKHUB_APIVersion = "1.0"
   LINKHUB_ServiceURL = "https://auth.linkhub.co.kr"
+  LINKHUB_ServiceURL_GA = "https://ga-auth.linkhub.co.kr"
 
   # Generate Linkhub Class Singleton Instance
   class << self
@@ -27,11 +28,12 @@ class Linkhub
   end
 
   # Get SessionToken for Bearer Token
-  def getSessionToken(serviceid, accessid, scope, forwardip="")
-    uri = URI(LINKHUB_ServiceURL + "/" + serviceid + "/Token")
+  def getSessionToken(serviceid, accessid, scope, forwardip="",useStaticIP=false)
+    uri = URI( (useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceid + "/Token")
+    puts(uri)
     postData = {:access_id => accessid, :scope => scope}.to_json
 
-    apiServerTime = getTime()
+    apiServerTime = getTime(useStaticIP)
 
     hmacTarget = "POST\n"
     hmacTarget += Base64.strict_encode64(Digest::MD5.digest(postData)) + "\n"
@@ -83,8 +85,9 @@ class Linkhub
 
 
   # Get API Server UTC Time
-  def getTime
-    uri = URI(LINKHUB_ServiceURL + "/Time")
+  def getTime(useStaticIP=false)
+    uri = URI((useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/Time")
+    puts(uri)
     res = Net::HTTP.get_response(uri)
 
     if res.code == "200"
@@ -96,9 +99,9 @@ class Linkhub
   end
 
   # 파트너 포인트 충전 URL - 2017/08/29 추가
-  def getPartnerURL(bearerToken, serviceID, togo)
-    uri = URI(LINKHUB_ServiceURL + "/" + serviceID + "/URL?TG=" + togo)
-
+  def getPartnerURL(bearerToken, serviceID, togo, useStaticIP=false)
+    uri = URI((useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceID + "/URL?TG=" + togo)
+    puts(uri)
     headers = {
       "Authorization" => "Bearer " + bearerToken,
     }
@@ -118,9 +121,9 @@ class Linkhub
   end
 
   # Get Popbill member remain point
-  def getBalance(bearerToken, serviceID)
-    uri = URI(LINKHUB_ServiceURL + "/" + serviceID + "/Point")
-
+  def getBalance(bearerToken, serviceID, useStaticIP=false)
+    uri = URI((useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceID + "/Point")
+    puts(uri)
     headers = {
       "Authorization" => "Bearer " + bearerToken,
     }
@@ -140,9 +143,9 @@ class Linkhub
   end
 
   # Get Linkhub partner remain point
-  def getPartnerBalance(bearerToken, serviceID)
-    uri = URI(LINKHUB_ServiceURL + "/" + serviceID + "/PartnerPoint")
-
+  def getPartnerBalance(bearerToken, serviceID, useStaticIP)
+    uri = URI( (useStaticIP ? LINKHUB_ServiceURL_GA : LINKHUB_ServiceURL) + "/" + serviceID + "/PartnerPoint")
+    puts(uri)
     headers = {
       "Authorization" => "Bearer " + bearerToken,
     }

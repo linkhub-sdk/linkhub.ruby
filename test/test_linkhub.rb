@@ -7,13 +7,14 @@ class LHTest < Test::Unit::TestCase
   LinkID = "TESTER"
   SecretKey = "SwWxqU+0TErBXy/9TVjIPEnI0VTUMMSQZtJf3Ed8q3I="
 
-  ServiceID = "POPBILL"
+  ServiceID = "POPBILL_TEST"
   AccessID = "1234567890"
   Scope = ["member","110"]
 
   def test_01getTime
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    serverTime = auth.getTime
+    serverTime = auth.getTime(false)
+    puts(serverTime)
     assert_not_nil(serverTime)
   end
 
@@ -25,9 +26,8 @@ class LHTest < Test::Unit::TestCase
 
   def test_03getSessionToken
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "*")
-    puts token['expiration']
-    puts token['ipaddress']
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "*", false)
+    puts token.to_s
     assert_not_nil(token)
   end
 
@@ -47,15 +47,15 @@ class LHTest < Test::Unit::TestCase
 
   def test_05getBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)['session_token']
-    balance = auth.getBalance(token, LHTest::ServiceID)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true)['session_token']
+    balance = auth.getBalance(token, LHTest::ServiceID, true)
     assert_not_nil(balance)
   end
 
   def test_06getPartnerBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)['session_token']
-    balance = auth.getPartnerBalance(token, LHTest::ServiceID)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true)['session_token']
+    balance = auth.getPartnerBalance(token, LHTest::ServiceID, true)
     assert_not_nil(balance)
   end
 
@@ -79,8 +79,8 @@ class LHTest < Test::Unit::TestCase
 
   def test_09getPartnerURL
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken("LHTest::ServiceID", LHTest::AccessID, LHTest::Scope)['session_token']
-    url = auth.getPartnerURL(token, LHTest::ServiceID, "CHRG")
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", false)['session_token']
+    url = auth.getPartnerURL(token, LHTest::ServiceID, "CHRG", false)
     assert_not_nil(url)
     puts url
   end
