@@ -13,7 +13,7 @@ class LHTest < Test::Unit::TestCase
 
   def test_01getTime
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    serverTime = auth.getTime(false)
+    serverTime = auth.getTime(true, false)
     puts(serverTime)
     assert_not_nil(serverTime)
   end
@@ -26,7 +26,7 @@ class LHTest < Test::Unit::TestCase
 
   def test_03getSessionToken
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "*", false)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "*", false, false)
     puts token.to_s
     assert_not_nil(token)
   end
@@ -47,15 +47,16 @@ class LHTest < Test::Unit::TestCase
 
   def test_05getBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true)['session_token']
-    balance = auth.getBalance(token, LHTest::ServiceID, true)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true, true)['session_token']
+    balance = auth.getBalance(token, LHTest::ServiceID, false, false)
     assert_not_nil(balance)
+    puts(balance)
   end
 
   def test_06getPartnerBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true)['session_token']
-    balance = auth.getPartnerBalance(token, LHTest::ServiceID, true)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true, true)['session_token']
+    balance = auth.getPartnerBalance(token, LHTest::ServiceID, true, true)
     assert_not_nil(balance)
   end
 
@@ -63,7 +64,7 @@ class LHTest < Test::Unit::TestCase
     assert_raise LinkhubException do
       auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
       token = auth.getSessionToken(LHTest::ServiceID, "9999999999", LHTest::Scope)['session_token']
-      balance = auth.getBalance(token, LHTest::ServiceID)
+      balance = auth.getBalance(token, LHTest::ServiceID, false, true)
       assert_not_nil(balance)
     end
   end
@@ -79,8 +80,8 @@ class LHTest < Test::Unit::TestCase
 
   def test_09getPartnerURL
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", false)['session_token']
-    url = auth.getPartnerURL(token, LHTest::ServiceID, "CHRG", false)
+    token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", false, false)['session_token']
+    url = auth.getPartnerURL(token, LHTest::ServiceID, "CHRG", false, false)
     assert_not_nil(url)
     puts url
   end
