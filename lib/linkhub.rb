@@ -12,7 +12,7 @@ require 'openssl'
 class Linkhub
   attr_accessor :_linkID, :_secretKey
 
-  LINKHUB_APIVersion = "1.0"
+  LINKHUB_APIVersion = "2.0"
   LINKHUB_ServiceURL = "https://auth.linkhub.co.kr"
   LINKHUB_ServiceURL_Static = "https://static-auth.linkhub.co.kr"
   LINKHUB_ServiceURL_GA = "https://ga-auth.linkhub.co.kr"
@@ -46,7 +46,7 @@ class Linkhub
     apiServerTime = getTime(useStaticIP, useGAIP)
 
     hmacTarget = "POST\n"
-    hmacTarget += Base64.strict_encode64(Digest::MD5.digest(postData)) + "\n"
+    hmacTarget += Base64.strict_encode64(Digest::SHA256.digest(postData)) + "\n"
     hmacTarget += apiServerTime + "\n"
 
     if forwardip != ""
@@ -59,7 +59,7 @@ class Linkhub
     key = Base64.decode64(@_secretKey)
 
     data = hmacTarget
-    digest = OpenSSL::Digest.new("sha1")
+    digest = OpenSSL::Digest.new("sha256")
     hmac = Base64.strict_encode64(OpenSSL::HMAC.digest(digest, key, data))
 
     headers = {

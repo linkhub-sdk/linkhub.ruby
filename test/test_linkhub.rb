@@ -11,40 +11,40 @@ class LHTest < Test::Unit::TestCase
   AccessID = "1234567890"
   Scope = ["member","110"]
 
-  def test_01getTime
-    auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    serverTime = auth.getTime(true, false)
-    puts(serverTime)
-    assert_not_nil(serverTime)
-  end
+  # def test_01getTime
+  #   auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
+  #   serverTime = auth.getTime(true, false)
+  #   puts(serverTime)
+  #   assert_not_nil(serverTime)
+  # end
 
-  def test_02singleton
-    auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    auth2 = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
-    assert_equal(auth, auth2, "Linkhub Singleton Instance Failure")
-  end
-
+  # def test_02singleton
+  #   auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
+  #   auth2 = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
+  #   assert_equal(auth, auth2, "Linkhub Singleton Instance Failure")
+  # end
+  #
   def test_03getSessionToken
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
     token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "*", false, false)
     puts token.to_s
     assert_not_nil(token)
   end
-
+  #
   def test_03getSessionTokenError
     assert_raise LinkhubException do
       auth = Linkhub.instance(LHTest::LinkID, "fake_secretkey")
       auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)
     end
   end
-
+  #
   def test_04LinkIDException
     assert_raise LinkhubException do
       auth = Linkhub.instance("ABCDEDDFF", LHTest::SecretKey)
       auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope)
     end
   end
-
+  #
   def test_05getBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
     token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true, true)['session_token']
@@ -52,7 +52,7 @@ class LHTest < Test::Unit::TestCase
     assert_not_nil(balance)
     puts(balance)
   end
-
+  #
   def test_06getPartnerBalance
     auth = Linkhub.instance(LHTest::LinkID, LHTest::SecretKey)
     token = auth.getSessionToken(LHTest::ServiceID, LHTest::AccessID, LHTest::Scope, "", true, true)['session_token']
