@@ -7,6 +7,7 @@ require "base64"
 require 'zlib'
 require 'stringio'
 require 'openssl'
+require 'time'
 
 # Linkhub API Base Class
 class Linkhub
@@ -38,12 +39,12 @@ class Linkhub
   end
 
   # Get SessionToken for Bearer Token
-  def getSessionToken(serviceid, accessid, scope, forwardip="",useStaticIP=false,useGAIP=false)
+  def getSessionToken(serviceid, accessid, scope, forwardip="",useStaticIP=false,useGAIP=false,useLocalTimeYN=true)
     uri = URI(getServiceURL(useStaticIP, useGAIP) + "/" + serviceid + "/Token")
 
     postData = {:access_id => accessid, :scope => scope}.to_json
 
-    apiServerTime = getTime(useStaticIP, useGAIP)
+    apiServerTime = getTime(useStaticIP, useGAIP, useLocalTimeYN)
 
     hmacTarget = "POST\n"
     hmacTarget += Base64.strict_encode64(Digest::SHA256.digest(postData)) + "\n"
@@ -95,16 +96,20 @@ class Linkhub
 
 
   # Get API Server UTC Time
-  def getTime(useStaticIP=false,useGAIP=false)
-    uri = URI(getServiceURL(useStaticIP, useGAIP) + "/Time")
-
-    res = Net::HTTP.get_response(uri)
-
-    if res.code == "200"
-      res.body
+  def getTime(useStaticIP=false,useGAIP=false,useLocalTimeYN=true)
+    if useLocalTimeYN
+      Time.now.utc.iso8601
     else
-      raise LinkhubException.new(-99999999,
-        "failed get Time from Linkhub API server")
+      uri = URI(getServiceURL(useStaticIP, useGAIP) + "/Time")
+
+      res = Net::HTTP.get_response(uri)
+
+      if res.code == "200"
+        res.body
+      else
+        raise LinkhubException.new(-99999999,
+          "failed get Time from Linkhub API server")
+      end
     end
   end
 
