@@ -7,7 +7,7 @@ Linkhub API Ruby SDK
 This library is Linkhub API for Ruby.
 
 == Required Ruby version
->= 2.0.0
+>= 2.3.0
 
 == Installation
 

@@ -28,7 +28,12 @@ class Linkhub
     private :new
   end
 
+  def setServiceURL(value)
+		@_serviceURL = value
+	end
+
   def getServiceURL(useStaticIP, useGAIP)
+    if @_serviceURL.nil? || @_serviceURL == ""
       if useGAIP
           return LINKHUB_ServiceURL_GA
       elsif useStaticIP
@@ -36,6 +41,9 @@ class Linkhub
       else
           return LINKHUB_ServiceURL
       end
+    else
+      return @_serviceURL
+    end
   end
 
   # Get SessionToken for Bearer Token
