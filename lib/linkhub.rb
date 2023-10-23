@@ -29,8 +29,8 @@ class Linkhub
   end
 
   def setServiceURL(value)
-		@_serviceURL = value
-	end
+    @_serviceURL = value
+  end
 
   def getServiceURL(useStaticIP, useGAIP)
     if @_serviceURL.nil? || @_serviceURL == ""
